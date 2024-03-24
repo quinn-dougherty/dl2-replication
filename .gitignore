@@ -1,0 +1,7 @@
+.direnv/
+.virtual_documents/
+.ipynb_checkpoints/
+data/
+dist/
+result
+__pycache__/
