@@ -1,4 +1,4 @@
-from config import config
+from dl2.config import config
 from abc import ABC
 from typing import Sequence
 from functools import reduce
@@ -152,11 +152,13 @@ class LT(Condition):
             Float[Array, "dim"]: Loss value.
         """
         if config.use_eps:
-            return lax.clamp(diffsat_delta(self.a + config.eps, self.b), min=0.0)
+            return lax.clamp(
+                min=0.0, x=diffsat_delta(self.a + config.eps, self.b), max=jnp.inf
+            )
         else:
-            return lax.clamp(diffsat_delta(self.a, self.b), min=0.0) + jnp.equal(
-                self.a, self.b
-            ).astype(self.a.dtype)
+            return lax.clamp(
+                min=0.0, x=diffsat_delta(self.a, self.b), max=jnp.inf
+            ) + jnp.equal(self.a, self.b).astype(self.a.dtype)
 
     def satisfy(self) -> Float[Array, "dim"]:
         """
@@ -188,7 +190,7 @@ class EQ(Condition):
         Returns:
             Float[Array, "dim"]: Loss value.
         """
-        return lax.clamp(diffsat_delta(self.a, self.b), min=0.0)
+        return lax.clamp(min=0.0, x=diffsat_delta(self.a, self.b), max=jnp.inf)
 
     def satisfy(self) -> Float[Array, "dim"]:
         """
@@ -220,7 +222,7 @@ class GEQ(Condition):
         Returns:
             Float[Array, "dim"]: Loss value.
         """
-        return lax.clamp(diffsat_delta(self.b, self.a), min=0.0)
+        return lax.clamp(min=0.0, x=diffsat_delta(self.b, self.a), max=jnp.inf)
 
     def satisfy(self) -> Float[Array, "dim"]:
         """

@@ -1,4 +1,5 @@
 """Abstract syntax of the dl2 language."""
+
 from dataclasses import dataclass
 from abc import ABC
 from enum import Enum
